@@ -28,7 +28,6 @@
             <p class="text-gray-500">Silakan isi data di bawah ini dengan lengkap dan benar.</p>
         </div>
 
-        <!-- PERBAIKAN: Menambahkan div untuk notifikasi error client-side -->
         <div id="client-side-error" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded" role="alert">
             <p class="font-bold">Gagal Mengirim</p>
             <p>Harap periksa kembali. Pastikan semua kolom yang wajib diisi telah Anda lengkapi.</p>
@@ -326,8 +325,8 @@
         </form>
     </div>
 
-    <!-- PERBAIKAN: Modal untuk notifikasi sukses -->
-    <div id="successModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+    <!-- Modal untuk notifikasi sukses -->
+    <div id="successModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" @if(session('success')) data-show="true" @endif>
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
@@ -402,17 +401,14 @@
                 });
             });
 
-            // PERBAIKAN: Logika untuk validasi client-side dan pop-up
             form.addEventListener('submit', function(event) {
                 let firstInvalidField = null;
                 clientSideError.classList.add('hidden');
 
-                // Hapus semua style error sebelumnya
                 form.querySelectorAll('[required]').forEach(el => {
                     el.classList.remove('invalid-input');
                 });
 
-                // Cek setiap input yang wajib diisi
                 for (const el of form.querySelectorAll('[required]')) {
                     if (!el.value.trim()) {
                         el.classList.add('invalid-input');
@@ -423,24 +419,25 @@
                 }
 
                 if (firstInvalidField) {
-                    event.preventDefault(); // Hentikan pengiriman form
+                    event.preventDefault(); 
                     clientSideError.classList.remove('hidden');
                     
-                    // Pindah ke tab yang berisi input tidak valid
                     const invalidTab = firstInvalidField.closest('.tab-content');
                     if (invalidTab) {
                         switchTab(invalidTab.id);
                     }
-                    firstInvalidField.focus(); // Fokus ke input pertama yang kosong
+                    
+                    clientSideError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    firstInvalidField.focus();
                 }
             });
 
-            // Tampilkan modal jika ada session 'success'
-            @if(session('success'))
+            // Tampilkan modal jika ada data-show="true"
+            if (successModal && successModal.dataset.show === 'true') {
                 successModal.classList.remove('hidden');
-            @endif
+            }
 
-            // Tutup modal saat tombol OK diklik
             if(closeModalBtn) {
                 closeModalBtn.addEventListener('click', function() {
                     successModal.classList.add('hidden');
