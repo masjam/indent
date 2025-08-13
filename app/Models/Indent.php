@@ -12,6 +12,7 @@ class Indent extends Model
     protected $fillable = [
         'tahun_ajaran',
         'nama_siswa',
+        'nisn',
         'nik',
         'no_kk',
         'alamat',
