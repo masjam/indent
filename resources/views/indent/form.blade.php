@@ -2,448 +2,279 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Form Indent Siswa Baru</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Pendaftaran</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Sembunyikan konten tab secara default */
-        .tab-content {
-            display: none;
-        }
-        /* Tampilkan konten tab yang aktif */
-        .tab-content.active {
-            display: block;
-        }
-        /* Styling untuk input yang tidak valid */
-        .invalid-input {
-            border-color: #ef4444; /* red-500 */
-            box-shadow: 0 0 0 2px #fecaca; /* red-200 */
-        }
-    </style>
 </head>
-<body class="bg-gray-100 p-6">
-    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">Formulir Indent SPMB</h1>
-            <h2 class="text-xl text-gray-600 mt-2">SD Al Mujahidin Wonosari</h2>
-            <p class="text-gray-500">Silakan isi data di bawah ini dengan lengkap dan benar.</p>
+<body class="bg-gray-100 p-4">
+
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold mb-4 text-center">Formulir Pendaftaran</h1>
+
+    <form id="regForm">
+
+        <!-- Tab 1: Tahun Ajaran -->
+        <div class="tab">
+            <h2 class="text-lg font-semibold mb-2">Tahun Ajaran</h2>
+            <label class="block mb-1">Tahun Ajaran *</label>
+            <select name="tahun_ajaran" class="w-full border rounded p-2" required>
+                <option value="">-- Pilih Tahun Ajaran --</option>
+                {{-- <option class="disabled">2025/2026</option> --}}
+                {{-- <option>2026/2027</option> --}}
+                <option>2027/2028</option>
+                <option>2028/2029</option>
+                <option>2029/2030</option>
+                <option>2030/2031</option>
+                <option>2031/2032</option>
+
+            </select>
         </div>
 
-        <div id="client-side-error" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded" role="alert">
-            <p class="font-bold">Gagal Mengirim</p>
-            <p>Harap periksa kembali. Pastikan semua kolom yang wajib diisi telah Anda lengkapi.</p>
+        <!-- Tab 2: Data Siswa -->
+        <div class="tab hidden">
+    <h2 class="text-lg font-semibold mb-2">Data Siswa</h2>
+
+    <!-- Nama Lengkap (Full Width) -->
+    <label class="block mt-3 mb-1">Nama Lengkap *</label>
+    <input type="text" name="nama_siswa" class="w-full border rounded p-2" required>
+
+    <!-- 2 Kolom -->
+    <div class="grid grid-cols-2 gap-4 mt-4">
+        <div>
+            <label class="block mb-1">Nama Panggilan *</label>
+            <input type="text" name="nama_panggilan" class="w-full border rounded p-2" required>
         </div>
-
-        @if ($errors->any())
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded" role="alert">
-                <p class="font-bold">Whoops! Ada beberapa masalah dengan input Anda.</p>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form id="indentForm" action="{{ route('indent.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-
-            <!-- Navigasi Tab -->
-            <div class="mb-6 border-b border-gray-200">
-                <ul class="flex flex-wrap -mb-px" id="myTab" role="tablist">
-                    <li class="mr-2" role="presentation">
-                        <button class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" type="button" role="tab" data-target="tab1">Data Siswa</button>
-                    </li>
-                    <li class="mr-2" role="presentation">
-                        <button class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" type="button" role="tab" data-target="tab2">Alamat</button>
-                    </li>
-                    <li class="mr-2" role="presentation">
-                        <button class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" type="button" role="tab" data-target="tab3">Data Ayah</button>
-                    </li>
-                    <li class="mr-2" role="presentation">
-                        <button class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" type="button" role="tab" data-target="tab4">Data Ibu</button>
-                    </li>
-                    <li role="presentation">
-                        <button class="tab-btn inline-block p-4 border-b-2 rounded-t-lg" type="button" role="tab" data-target="tab5">Data Wali</button>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Konten Tab -->
-            <div id="tab-content-container">
-                <!-- Tab 1: Data Siswa -->
-                <div id="tab1" class="tab-content">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="tahun_ajaran" class="block text-sm font-medium text-gray-700">Tahun Ajaran</label>
-                            <select id="tahun_ajaran" name="tahun_ajaran" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2" required>
-                                <option value="">Pilih Tahun Masuk</option>
-                                <option value="2026-2027" @if(old('tahun_ajaran') == '2026-2027') selected @endif>2026/2027</option>
-                                <option value="2027-2028" @if(old('tahun_ajaran') == '2027-2028') selected @endif>2027/2028</option>
-                                <option value="2028-2029" @if(old('tahun_ajaran') == '2028-2029') selected @endif>2028/2029</option>
-                                <option value="2029-2030" @if(old('tahun_ajaran') == '2029-2030') selected @endif>2029/2030</option>
-                                <option value="2030-2031" @if(old('tahun_ajaran') == '2030-2031') selected @endif>2030/2031</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="nama_siswa" class="block text-sm font-medium text-gray-700">Nama Lengkap Siswa</label>
-                            <input type="text" id="nama_siswa" name="nama_siswa" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('nama_siswa') }}">
-                        </div>
-                        <div>
-                            <label for="nisn" class="block text-sm font-medium text-gray-700">NISN</label>
-                            <input type="text" id="nisn" name="nisn" minlength="10" maxlength="10" pattern="\d{10}" title="NISN harus 10 digit angka" class="numeric-input mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('nisn') }}">
-                        </div>
-                        <div>
-                            <label for="nik" class="block text-sm font-medium text-gray-700">NIK Siswa</label>
-                            <input type="text" id="nik" name="nik" minlength="16" maxlength="16" pattern="\d{16}" title="NIK harus 16 digit angka" class="numeric-input mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('nik') }}">
-                        </div>
-                        <div>
-                            <label for="no_kk" class="block text-sm font-medium text-gray-700">No. Kartu Keluarga (KK)</label>
-                            <input type="text" id="no_kk" name="no_kk" minlength="16" maxlength="16" pattern="\d{16}" title="No. KK harus 16 digit angka" class="numeric-input mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('no_kk') }}">
-                        </div>
-                        <div>
-                            <label for="asal_tk" class="block text-sm font-medium text-gray-700">Asal TK/RA</label>
-                            <input type="text" id="asal_tk" name="asal_tk" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('asal_tk') }}">
-                        </div>
-                        <div>
-                            <label for="tempat_lahir" class="block text-sm font-medium text-gray-700">Tempat Lahir</label>
-                            <input type="text" id="tempat_lahir" name="tempat_lahir" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('tempat_lahir') }}">
-                        </div>
-                        <div>
-                            <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
-                            <input type="date" id="tanggal_lahir" name="tanggal_lahir" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('tanggal_lahir') }}">
-                        </div>
-                        <div>
-                            <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
-                            <select id="jenis_kelamin" name="jenis_kelamin" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>
-                                <option value="">Pilih Jenis Kelamin</option>
-                                <option value="Laki-laki" @if(old('jenis_kelamin') == 'Laki-laki') selected @endif>Laki-laki</option>
-                                <option value="Perempuan" @if(old('jenis_kelamin') == 'Perempuan') selected @endif>Perempuan</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="agama" class="block text-sm font-medium text-gray-700">Agama</label>
-                            <select id="agama" name="agama" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>
-                                <option value="">Pilih Agama</option>
-                                <option value="Islam" @if(old('agama') == 'Islam') selected @endif>Islam</option>
-                                <option value="Kristen" @if(old('agama') == 'Kristen') selected @endif>Kristen</option>
-                                <option value="Katolik" @if(old('agama') == 'Katolik') selected @endif>Katolik</option>
-                                <option value="Hindu" @if(old('agama') == 'Hindu') selected @endif>Hindu</option>
-                                <option value="Buddha" @if(old('agama') == 'Buddha') selected @endif>Buddha</option>
-                                <option value="Konghucu" @if(old('agama') == 'Konghucu') selected @endif>Konghucu</option>
-                                <option value="Lainnya" @if(old('agama') == 'Lainnya') selected @endif>Lainnya</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="anak_ke" class="block text-sm font-medium text-gray-700">Anak Ke</label>
-                            <input type="number" id="anak_ke" name="anak_ke" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('anak_ke') }}">
-                        </div>
-                        <div>
-                            <label for="jumlah_saudara" class="block text-sm font-medium text-gray-700">Jumlah Saudara Kandung</label>
-                            <input type="number" id="jumlah_saudara" name="jumlah_saudara" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('jumlah_saudara') }}">
-                        </div>
-                        <div>
-                            <label for="bahasa_sehari_hari" class="block text-sm font-medium text-gray-700">Bahasa Sehari-hari</label>
-                            <input type="text" id="bahasa_sehari_hari" name="bahasa_sehari_hari" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('bahasa_sehari_hari') }}">
-                        </div>
-                        <div>
-                            <label for="kebutuhan_khusus" class="block text-sm font-medium text-gray-700">Kebutuhan Khusus</label>
-                            <input type="text" id="kebutuhan_khusus" name="kebutuhan_khusus" placeholder="(kosongi jika tidak ada)" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('kebutuhan_khusus') }}">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label for="foto" class="block text-sm font-medium text-gray-700">Upload Foto Siswa (3x4)</label>
-                            <input type="file" id="foto" name="foto" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept="image/*">
-                        </div>
-                    </div>
-                    <div class="mt-8 pt-5 border-t flex justify-end">
-                        <button type="button" class="next-btn bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Selanjutnya &rarr;</button>
-                    </div>
-                </div>
-
-                <!-- Tab 2: Alamat -->
-                <div id="tab2" class="tab-content">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat Lengkap (Nama Jalan/Dusun)</label>
-                            <textarea id="alamat" name="alamat" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>{{ old('alamat') }}</textarea>
-                        </div>
-                        <div>
-                            <label for="rt" class="block text-sm font-medium text-gray-700">RT</label>
-                            <input type="text" id="rt" name="rt" placeholder="Contoh: 001" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('rt') }}">
-                        </div>
-                        <div>
-                            <label for="rw" class="block text-sm font-medium text-gray-700">RW</label>
-                            <input type="text" id="rw" name="rw" placeholder="Contoh: 002" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('rw') }}">
-                        </div>
-                        <div>
-                            <label for="desa" class="block text-sm font-medium text-gray-700">Desa/Kelurahan</label>
-                            <input type="text" id="desa" name="desa" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('desa') }}">
-                        </div>
-                        <div>
-                            <label for="kecamatan" class="block text-sm font-medium text-gray-700">Kecamatan</label>
-                            <input type="text" id="kecamatan" name="kecamatan" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('kecamatan') }}">
-                        </div>
-                        <div>
-                            <label for="kabupaten" class="block text-sm font-medium text-gray-700">Kabupaten/Kota</label>
-                            <input type="text" id="kabupaten" name="kabupaten" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('kabupaten') }}">
-                        </div>
-                        <div>
-                            <label for="provinsi" class="block text-sm font-medium text-gray-700">Provinsi</label>
-                            <input type="text" id="provinsi" name="provinsi" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('provinsi') }}">
-                        </div>
-                        <div>
-                            <label for="kode_pos" class="block text-sm font-medium text-gray-700">Kode Pos</label>
-                            <input type="number" id="kode_pos" name="kode_pos" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('kode_pos') }}">
-                        </div>
-                         <div>
-                            <label for="transportasi" class="block text-sm font-medium text-gray-700">Transportasi ke Sekolah</label>
-                            <input type="text" id="transportasi" name="transportasi" placeholder="Contoh: Jalan Kaki, Sepeda, Diantar" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('transportasi') }}">
-                        </div>
-                        <div>
-                            <label for="jarak_rumah_sekolah" class="block text-sm font-medium text-gray-700">Jarak Rumah ke Sekolah</label>
-                            <input type="text" id="jarak_rumah_sekolah" name="jarak_rumah_sekolah" placeholder="Contoh: 1.5 km" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('jarak_rumah_sekolah') }}">
-                        </div>
-                         <div>
-                            <label for="waktu_tempuh_perjalanan" class="block text-sm font-medium text-gray-700">Waktu Tempuh</label>
-                            <input type="text" id="waktu_tempuh_perjalanan" name="waktu_tempuh_perjalanan" placeholder="Contoh: 15 menit" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('waktu_tempuh_perjalanan') }}">
-                        </div>
-                    </div>
-                    <div class="mt-8 pt-5 border-t flex justify-between">
-                        <button type="button" class="prev-btn bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg">&larr; Sebelumnya</button>
-                        <button type="button" class="next-btn bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Selanjutnya &rarr;</button>
-                    </div>
-                </div>
-
-                <!-- Tab 3: Data Ayah -->
-                <div id="tab3" class="tab-content">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="nama_ayah" class="block text-sm font-medium text-gray-700">Nama Ayah</label>
-                            <input type="text" id="nama_ayah" name="nama_ayah" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('nama_ayah') }}">
-                        </div>
-                        <div>
-                            <label for="nik_ayah" class="block text-sm font-medium text-gray-700">NIK Ayah</label>
-                            <input type="text" id="nik_ayah" name="nik_ayah" minlength="16" maxlength="16" pattern="\d{16}" title="NIK harus 16 digit angka" class="numeric-input mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('nik_ayah') }}">
-                        </div>
-                        <div>
-                            <label for="tahun_lahir_ayah" class="block text-sm font-medium text-gray-700">Tahun Lahir Ayah</label>
-                            <input type="number" id="tahun_lahir_ayah" name="tahun_lahir_ayah" placeholder="Contoh: 1985" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('tahun_lahir_ayah') }}">
-                        </div>
-                        <div>
-                            <label for="pekerjaan_ayah" class="block text-sm font-medium text-gray-700">Pekerjaan Ayah</label>
-                            <input type="text" id="pekerjaan_ayah" name="pekerjaan_ayah" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('pekerjaan_ayah') }}">
-                        </div>
-                        <div>
-                            <label for="penghasilan_ayah" class="block text-sm font-medium text-gray-700">Penghasilan Ayah</label>
-                            <input type="text" id="penghasilan_ayah" name="penghasilan_ayah" placeholder="Contoh: 3.000.000" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('penghasilan_ayah') }}">
-                        </div>
-                        <div>
-                            <label for="nohp_ayah" class="block text-sm font-medium text-gray-700">No. HP Ayah (Aktif)</label>
-                            <input type="text" id="nohp_ayah" name="nohp_ayah" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('nohp_ayah') }}">
-                        </div>
-                    </div>
-                    <div class="mt-8 pt-5 border-t flex justify-between">
-                        <button type="button" class="prev-btn bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg">&larr; Sebelumnya</button>
-                        <button type="button" class="next-btn bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Selanjutnya &rarr;</button>
-                    </div>
-                </div>
-
-                <!-- Tab 4: Data Ibu -->
-                <div id="tab4" class="tab-content">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="nama_ibu" class="block text-sm font-medium text-gray-700">Nama Ibu</label>
-                            <input type="text" id="nama_ibu" name="nama_ibu" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('nama_ibu') }}">
-                        </div>
-                        <div>
-                            <label for="nik_ibu" class="block text-sm font-medium text-gray-700">NIK Ibu</label>
-                            <input type="text" id="nik_ibu" name="nik_ibu" minlength="16" maxlength="16" pattern="\d{16}" title="NIK harus 16 digit angka" class="numeric-input mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('nik_ibu') }}">
-                        </div>
-                        <div>
-                            <label for="tahun_lahir_ibu" class="block text-sm font-medium text-gray-700">Tahun Lahir Ibu</label>
-                            <input type="number" id="tahun_lahir_ibu" name="tahun_lahir_ibu" placeholder="Contoh: 1987" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required value="{{ old('tahun_lahir_ibu') }}">
-                        </div>
-                        <div>
-                            <label for="pekerjaan_ibu" class="block text-sm font-medium text-gray-700">Pekerjaan Ibu</label>
-                            <input type="text" id="pekerjaan_ibu" name="pekerjaan_ibu" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('pekerjaan_ibu') }}">
-                        </div>
-                        <div>
-                            <label for="penghasilan_ibu" class="block text-sm font-medium text-gray-700">Penghasilan Ibu</label>
-                            <input type="text" id="penghasilan_ibu" name="penghasilan_ibu" placeholder="Contoh: 1.500.000" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('penghasilan_ibu') }}">
-                        </div>
-                        <div>
-                            <label for="nohp_ibu" class="block text-sm font-medium text-gray-700">No. HP Ibu (Aktif)</label>
-                            <input type="text" id="nohp_ibu" name="nohp_ibu" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('nohp_ibu') }}">
-                        </div>
-                    </div>
-                    <div class="mt-8 pt-5 border-t flex justify-between">
-                        <button type="button" class="prev-btn bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg">&larr; Sebelumnya</button>
-                        <button type="button" class="next-btn bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Selanjutnya &rarr;</button>
-                    </div>
-                </div>
-
-                <!-- Tab 5: Data Wali -->
-                <div id="tab5" class="tab-content">
-                     <p class="text-sm text-gray-600 mb-4 bg-yellow-50 border border-yellow-200 p-3 rounded-md">Bagian ini bersifat opsional. Diisi hanya jika siswa tidak tinggal bersama orang tua kandung.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                       <div>
-                            <label for="nama_wali" class="block text-sm font-medium text-gray-700">Nama Wali</label>
-                            <input type="text" id="nama_wali" name="nama_wali" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('nama_wali') }}">
-                        </div>
-                        <div>
-                            <label for="nik_wali" class="block text-sm font-medium text-gray-700">NIK Wali</label>
-                            <input type="text" id="nik_wali" name="nik_wali" minlength="16" maxlength="16" pattern="\d{16}" title="NIK harus 16 digit angka" class="numeric-input mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('nik_wali') }}">
-                        </div>
-                        <div>
-                            <label for="tahun_lahir_wali" class="block text-sm font-medium text-gray-700">Tahun Lahir Wali</label>
-                            <input type="number" id="tahun_lahir_wali" name="tahun_lahir_wali" placeholder="Contoh: 1980" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('tahun_lahir_wali') }}">
-                        </div>
-                        <div>
-                            <label for="pekerjaan_wali" class="block text-sm font-medium text-gray-700">Pekerjaan Wali</label>
-                            <input type="text" id="pekerjaan_wali" name="pekerjaan_wali" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('pekerjaan_wali') }}">
-                        </div>
-                        <div>
-                            <label for="penghasilan_wali" class="block text-sm font-medium text-gray-700">Penghasilan Wali</label>
-                            <input type="text" id="penghasilan_wali" name="penghasilan_wali" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('penghasilan_wali') }}">
-                        </div>
-                        <div>
-                            <label for="nohp_wali" class="block text-sm font-medium text-gray-700">No. HP Wali (Aktif)</label>
-                            <input type="text" id="nohp_wali" name="nohp_wali" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('nohp_wali') }}">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label for="hubungan_wali" class="block text-sm font-medium text-gray-700">Hubungan dengan Siswa</label>
-                            <input type="text" id="hubungan_wali" name="hubungan_wali" placeholder="Contoh: Kakek, Nenek, Paman, dll." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" value="{{ old('hubungan_wali') }}">
-                        </div>
-                    </div>
-                    <div class="mt-8 pt-5 border-t flex justify-between items-center">
-                        <button type="button" class="prev-btn bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg">&larr; Sebelumnya</button>
-                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition duration-300 ease-in-out">
-                            Kirim Formulir
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-
-    <!-- Modal untuk notifikasi sukses -->
-    <div id="successModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" @if(session('success')) data-show="true" @endif>
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div class="mt-3 text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                </div>
-                <h3 class="text-lg leading-6 font-medium text-gray-900 mt-2">Berhasil!</h3>
-                <div class="mt-2 px-7 py-3">
-                    <p class="text-sm text-gray-500">{{ session('success') }}</p>
-                </div>
-                <div class="items-center px-4 py-3">
-                    <button id="closeModal" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
-                        OK
-                    </button>
-                </div>
-            </div>
+        <div>
+            <label class="block mb-1">Jenis Kelamin *</label>
+            <select name="jenis_kelamin" class="w-full border rounded p-2" required>
+                <option value="">-- Pilih Jenis Kelamin --</option>
+                <option>Laki-laki</option>
+                <option>Perempuan</option>
+            </select>
+        </div>
+        <div>
+            <label class="block mb-1">Tempat Lahir *</label>
+            <input type="text" name="tempat_lahir" class="w-full border rounded p-2" required>
+        </div>
+        <div>
+            <label class="block mb-1">Tanggal Lahir *</label>
+            <input type="date" name="tanggal_lahir" class="w-full border rounded p-2" required>
+        </div>
+        <div>
+            <label class="block mb-1">NIK *</label>
+            <input type="text" name="nik" pattern="\d{16}" maxlength="16" minlength="16"
+                class="w-full border rounded p-2" required title="NIK harus 16 digit angka">
+        </div>
+        <div>
+            <label class="block mb-1">No KK *</label>
+            <input type="text" name="no_kk" pattern="\d{16}" maxlength="16" minlength="16"
+                class="w-full border rounded p-2" required title="Nomor KK harus 16 digit angka">
+        </div>
+        <div>
+            <label class="block mb-1">NISN</label>
+            <input type="text" name="nisn" pattern="\d{10}" maxlength="10" minlength="10"
+                class="w-full border rounded p-2" title="NISN harus 10 digit angka">
+        </div>
+        <div>
+            <label class="block mb-1">Asal TK</label>
+            <input type="text" name="asal_tk" class="w-full border rounded p-2">
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('indentForm');
-            const tabs = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-            const nextButtons = document.querySelectorAll('.next-btn');
-            const prevButtons = document.querySelectorAll('.prev-btn');
-            const successModal = document.getElementById('successModal');
-            const closeModalBtn = document.getElementById('closeModal');
-            const clientSideError = document.getElementById('client-side-error');
+    <!-- 3 Kolom Upload -->
+    <div class="grid grid-cols-3 gap-4 mt-4">
+        <div>
+            <label class="block mb-1">Foto *</label>
+            <input type="file" name="foto" class="w-full border rounded p-2" required>
+        </div>
+        <div>
+            <label class="block mb-1">Kartu Keluarga *</label>
+            <input type="file" name="kartu_keluarga" class="w-full border rounded p-2" required>
+        </div>
+        <div>
+            <label class="block mb-1">Akte Kelahiran *</label>
+            <input type="file" name="akte_kelahiran" class="w-full border rounded p-2" required>
+        </div>
+    </div>
+</div>
 
-            function switchTab(targetId) {
-                tabContents.forEach(content => content.classList.remove('active'));
-                tabs.forEach(tab => {
-                    tab.classList.remove('border-blue-600', 'text-blue-600');
-                    tab.classList.add('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
-                });
 
-                const targetContent = document.getElementById(targetId);
-                const targetButton = document.querySelector(`.tab-btn[data-target="${targetId}"]`);
-                
-                if (targetContent) targetContent.classList.add('active');
-                if (targetButton) {
-                    targetButton.classList.add('border-blue-600', 'text-blue-600');
-                    targetButton.classList.remove('border-transparent', 'hover:text-gray-600', 'hover:border-gray-300');
-                }
-            }
+        <!-- Tab 3: Alamat -->
+        <div class="tab hidden">
+            <h2 class="text-lg font-semibold mb-2">Alamat</h2>
+            <label class="block mb-1">Alamat Lengkap *</label>
+            <textarea name="alamat" class="w-full border rounded p-2" required></textarea>
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                    <label class="block mt-3 mb-1">Kelurahan *</label>
+                    <input type="text" name="kelurahan" class="w-full border rounded p-2" required>
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Kecamatan *</label>
+                    <input type="text" name="kecamatan" class="w-full border rounded p-2" required>
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Kota/Kabupaten *</label>
+                    <input type="text" name="kota" class="w-full border rounded p-2" required>
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Provinsi *</label>
+                    <input type="text" name="provinsi" class="w-full border rounded p-2" required>
+                </div>
+            </div>
+        </div>
 
-            switchTab('tab1');
 
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => switchTab(tab.getAttribute('data-target')));
-            });
+        <!-- Tab 4: Data Orang Tua -->
+        <div class="tab hidden">
+            <h2 class="text-lg font-semibold mb-2">Data Ayah</h2>
+            <label class="block mb-1">Nama Ayah *</label>
+            <input type="text" name="nama_ayah" class="w-full border rounded p-2" >
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                    <label class="block mt-3 mb-1">NIK Ayah*</label>
+                    <input type="text" name="nik_ayah" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Tahun Lahir *</label>
+                    <input type="text" name="pekerjaan_ayah" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">No HP Ayah *</label>
+                    <input type="text" name="no_hp_ayah" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Pendidikan Ayah *</label>
+                    <input type="text" name="pendidikan_ayah" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Pekerjaan Ayah *</label>
+                    <input type="text" name="pekerjaan_ayah" class="w-full border rounded p-2" >
+                </div>
+            </div>
+        </div>
+        {{-- Data Ibu  --}}
+        <div class="tab hidden">
+           <h2 class="text-lg font-semibold mb-2">Data Ibu</h2>
+            <label class="block mb-1">Nama Ibu *</label>
+            <input type="text" name="nama_ibu" class="w-full border rounded p-2" required>
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                    <label class="block mt-3 mb-1">NIK Ibu*</label>
+                    <input type="text" name="nik_ibu" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Tahun Lahir *</label>
+                    <input type="text" name="tahun_lahir_ibu" class="w-full border rounded p-2" required >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">No HP Ibu *</label>
+                    <input type="text" name="no_hp_ibu" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Pendidikan Ibu *</label>
+                    <input type="text" name="pendidikan_ibu" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Pekerjaan Ibu *</label>
+                    <input type="text" name="pekerjaan_ibu" class="w-full border rounded p-2" >
+                </div>
+            </div>
+        </div>
+        <!-- Tab 5: Data Wali -->
+        <div class="tab hidden">
+            <h2 class="text-lg font-semibold mb-2">Data Wali</h2>
+            <label class="block mb-1">Nama Wali *</label>
+            <input type="text" name="nama_wali" class="w-full border rounded p-2" >
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div>
+                    <label class="block mt-3 mb-1">NIK Wali *</label>
+                    <input type="text" name="nik_wali" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Tahun Lahir Wali *</label>
+                    <input type="text" name="tahun_lahir_wali" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">No HP Wali *</label>
+                    <input type="text" name="no_hp_wali" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Pendidikan Wali *</label>
+                    <input type="text" name="pendidikan_wali" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Pekerjaan Wali *</label>
+                    <input type="text" name="pekerjaan_wali" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Hubungan Wali *</label>
+                    <input type="text" name="hubungan_wali" class="w-full border rounded p-2" >
+                </div>
+                <div>
+                    <label class="block mt-3 mb-1">Alamat Wali *</label>
+                    <textarea name="alamat_wali" class="w-full border rounded p-2" >
+                    </textarea>
+                </div>
+            </div>
+        </div>
 
-            nextButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const currentId = parseInt(button.closest('.tab-content').id.replace('tab', ''));
-                    switchTab('tab' + (currentId + 1));
-                    window.scrollTo(0, 0);
-                });
-            });
+        <!-- Tab 6: Konfirmasi -->
+        <div class="tab hidden">
+            <h2 class="text-lg font-semibold mb-2">Konfirmasi</h2>
+            <p>Periksa kembali data yang telah Anda masukkan sebelum mengirimkan formulir.</p>
+        </div>
 
-            prevButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const currentId = parseInt(button.closest('.tab-content').id.replace('tab', ''));
-                    switchTab('tab' + (currentId - 1));
-                    window.scrollTo(0, 0);
-                });
-            });
+        <!-- Navigation Buttons -->
+        <div class="mt-6 flex justify-between">
+            <button type="button" id="prevBtn" onclick="nextPrev(-1)" class="bg-gray-500 text-white px-4 py-2 rounded hidden">Sebelumnya</button>
+            <button type="button" id="nextBtn" onclick="nextPrev(1)" class="bg-blue-500 text-white px-4 py-2 rounded">Berikutnya</button>
+        </div>
+    </form>
+</div>
 
-            document.querySelectorAll('.numeric-input').forEach(input => {
-                input.addEventListener('input', function (e) {
-                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                });
-            });
+<script>
+let currentTab = 0;
+const tabs = document.querySelectorAll(".tab");
+showTab(currentTab);
 
-            form.addEventListener('submit', function(event) {
-                let firstInvalidField = null;
-                clientSideError.classList.add('hidden');
+function showTab(n) {
+    tabs.forEach((tab, index) => {
+        tab.classList.toggle("hidden", index !== n);
+    });
+    document.getElementById("prevBtn").classList.toggle("hidden", n === 0);
+    document.getElementById("nextBtn").innerText = (n === tabs.length - 1) ? "Kirim" : "Berikutnya";
+}
 
-                form.querySelectorAll('[required]').forEach(el => {
-                    el.classList.remove('invalid-input');
-                });
+function nextPrev(n) {
+    if (n === 1 && !validateForm()) return false;
+    currentTab += n;
+    if (currentTab >= tabs.length) {
+        document.getElementById("regForm").submit();
+        return false;
+    }
+    showTab(currentTab);
+}
 
-                for (const el of form.querySelectorAll('[required]')) {
-                    if (!el.value.trim()) {
-                        el.classList.add('invalid-input');
-                        if (!firstInvalidField) {
-                            firstInvalidField = el;
-                        }
-                    }
-                }
+function validateForm() {
+    let valid = true;
+    const inputs = tabs[currentTab].querySelectorAll("input[required], textarea[required], select[required]");
+    inputs.forEach(input => {
+        let value = input.value.trim();
+        if (input.name === "nik" || input.name === "no_kk") {
+            if (!/^\d{16}$/.test(value)) { valid = false; input.classList.add("border-red-500"); }
+            else { input.classList.remove("border-red-500"); }
+        } else if (input.name === "nisn") {
+            if (!/^\d{10}$/.test(value)) { valid = false; input.classList.add("border-red-500"); }
+            else { input.classList.remove("border-red-500"); }
+        } else {
+            if (!value) { valid = false; input.classList.add("border-red-500"); }
+            else { input.classList.remove("border-red-500"); }
+        }
+    });
+    return valid;
+}
+</script>
 
-                if (firstInvalidField) {
-                    event.preventDefault(); 
-                    clientSideError.classList.remove('hidden');
-                    
-                    const invalidTab = firstInvalidField.closest('.tab-content');
-                    if (invalidTab) {
-                        switchTab(invalidTab.id);
-                    }
-                    
-                    clientSideError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    firstInvalidField.focus();
-                }
-            });
-
-            // Tampilkan modal jika ada data-show="true"
-            if (successModal && successModal.dataset.show === 'true') {
-                successModal.classList.remove('hidden');
-            }
-
-            if(closeModalBtn) {
-                closeModalBtn.addEventListener('click', function() {
-                    successModal.classList.add('hidden');
-                });
-            }
-        });
-    </script>
 </body>
 </html>
