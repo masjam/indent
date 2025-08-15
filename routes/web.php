@@ -8,10 +8,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
 
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
-Route::get('/', [IndentController::class, 'index']);
-Route::post('/indent', [IndentController::class, 'store'])->name('indent.store');
-Route::get('/indents/{id}/cetak', [IndentController::class, 'cetak'])->name('indents.cetak');
+// Route::get('/', [IndentController::class, 'index']);
+// Route::post('/indent', [IndentController::class, 'store'])->name('indent.store');
+// Route::get('/indents/{id}/cetak', [IndentController::class, 'cetak'])->name('indents.cetak');
