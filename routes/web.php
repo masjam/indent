@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing');
 });
 
 // Route::get('/', [IndentController::class, 'index']);
